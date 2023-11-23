@@ -1,9 +1,8 @@
-
 import express from 'express'
 const app = express()
 
 app.get('/', (req, res) => {
-    res.send('assignment tow server running!')
+  res.send('assignment tow server running!')
 })
 
 export default app
