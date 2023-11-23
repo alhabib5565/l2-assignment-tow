@@ -1,4 +1,9 @@
 
+export type Address = {
+    street: string;
+    city: string;
+    country: string;
+}
 
 export type User = {
     userId: number;
@@ -12,10 +17,6 @@ export type User = {
     email: string;
     isActive: boolean;
     hobbies: string[];
-    address: {
-        street: string;
-        city: string;
-        country: string;
-    };
+    address: Address
 }
 
