@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { Address, FullName, User } from "./user.interface";
+import { Address, FullName, TUser } from "./user.interface";
 
 const addressSchema = new Schema<Address>({
     street: {
@@ -28,7 +28,7 @@ const fullNameSchema = new Schema<FullName>({
     }
 })
 
-const userSchema = new Schema<User>({
+const userSchema = new Schema<TUser>({
     userId: {
         type: Number,
         unique: true,
@@ -69,4 +69,4 @@ const userSchema = new Schema<User>({
 })
 
 
-export const user = model<User>('user', userSchema)
+export const User = model<TUser>('user', userSchema)
