@@ -5,14 +5,16 @@ export type Address = {
     country: string;
 }
 
+export type FullName = {
+    firstName: string;
+    lastName: string;
+}
+
 export type User = {
     userId: number;
     username: string;
     password: string;
-    fullName: {
-        firstName: string;
-        lastName: string;
-    };
+    fullName: FullName;
     age: number;
     email: string;
     isActive: boolean;

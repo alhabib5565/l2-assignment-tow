@@ -1,16 +1,31 @@
 import { Schema, model } from "mongoose";
-import { Address, User } from "./user.interface";
+import { Address, FullName, User } from "./user.interface";
 
 const addressSchema = new Schema<Address>({
     street: {
-        type: String
+        type: String,
+        required: [true, 'Street is required']
+
     },
     city: {
-        type: String
+        type: String,
+        required: [true, 'City is required']
     },
     country: {
-        type: String
+        type: String,
+        required: [true, 'Country is required']
     },
+})
+
+const fullNameSchema = new Schema<FullName>({
+    firstName: {
+        type: String,
+        required: [true, 'firstName is required']
+    },
+    lastName: {
+        type: String,
+        required: [true, 'lastName is required']
+    }
 })
 
 const userSchema = new Schema<User>({
@@ -20,30 +35,37 @@ const userSchema = new Schema<User>({
         required: [true, 'userId is required']
     },
     username: {
-        type: String
+        type: String,
+        required: [true, 'user name is required']
     },
     password: {
-        type: String
+        type: String,
+        required: [true, 'password is required']
     },
     fullName: {
-        firstName: {
-            type: String
-        },
-        lastName: {
-            type: String
-        }
+        type: fullNameSchema,
+        required: [true, 'full name is required']
     },
     age: {
-        type: Number
+        type: Number,
+        required: [true, 'age is required']
     },
     email: {
-        type: String
+        type: String,
+        required: [true, 'email is required']
     },
     isActive: {
-        type: Boolean
+        type: Boolean,
+        required: [true, 'isActive is required']
     },
-    hobbies: [String],
-    address: addressSchema
+    hobbies: {
+        type: [String],
+        required: [true, 'hobbies is required']
+    },
+    address: {
+        type: addressSchema,
+        required: [true, 'address is required']
+    }
 })
 
 
