@@ -17,6 +17,7 @@ const getAllUser = async () => {
     // const result = await User.find({})
     return result
 }
+
 const getSingleUser = async (id: number) => {
     const user = new User()
     if (await user.isUserExists(id)) {
@@ -25,7 +26,6 @@ const getSingleUser = async (id: number) => {
     } else {
         throw Error('User not found')
     }
-    // const result = await User.findById(id)
 }
 
 
@@ -81,10 +81,12 @@ const getSingleUserOrders = async (id: number) => {
 
 const getTotalPrice = async (id: number) => {
     const result = await User.aggregate([
-        { $match: { userId: id } },
-        { $group: { _id: id, totalPrice: { $sum: "orders.price" } } }
+        { $unwind: '$orders' },
+        { $group: { _id: id, totalPrice: { $sum: "$orders.price" } } },
+        { $project: { _id: 0 } }
     ])
-    return result
+
+    return result[0]
 
 }
 
