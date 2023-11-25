@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
-import { Address, FullName, TUser } from "./user.interface";
-
+import { Address, FullName, Order, TUser, UserMethods, UserModel } from "./user.interface";
+import bcrypt from 'bcrypt'
+import config from "../../config";
 const addressSchema = new Schema<Address>({
     street: {
         type: String,
@@ -15,7 +16,7 @@ const addressSchema = new Schema<Address>({
         type: String,
         required: [true, 'Country is required']
     },
-})
+}, { _id: false })
 
 const fullNameSchema = new Schema<FullName>({
     firstName: {
@@ -26,9 +27,24 @@ const fullNameSchema = new Schema<FullName>({
         type: String,
         required: [true, 'lastName is required']
     }
-})
+}, { _id: false })
 
-const userSchema = new Schema<TUser>({
+const orderSchema = new Schema<Order>({
+    productName: {
+        type: String,
+        required: [true, 'productName is required']
+    },
+    price: {
+        type: Number,
+        required: [true, 'price is required']
+    },
+    quantity: {
+        type: Number,
+        required: [true, 'quantity is required']
+    }
+}, { _id: false })
+
+const userSchema = new Schema<TUser, UserModel, UserMethods>({
     userId: {
         type: Number,
         unique: true,
@@ -65,8 +81,30 @@ const userSchema = new Schema<TUser>({
     address: {
         type: addressSchema,
         required: [true, 'address is required']
+    },
+    orders: {
+        type: [orderSchema],
+        default: []
     }
+}, { id: false })
+
+userSchema.pre('save', async function (next) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const user = this
+    user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt_round))
+    next()
+})
+
+userSchema.post('save', async function (doc, next) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    doc.password = ''
+    next()
 })
 
 
-export const User = model<TUser>('user', userSchema)
+userSchema.method('isUserExists', async function isUserExists(id: number) {
+    const existing = await User.findOne({ userId: id })
+    return existing
+})
+
+export const User = model<TUser, UserModel>('user', userSchema)

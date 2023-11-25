@@ -1,6 +1,6 @@
 
 import { z } from 'zod'
-const addressSchema = z.object({
+const addressValidateSchema = z.object({
     street: z.string({
         required_error: 'street is required',
     }).nonempty({
@@ -18,7 +18,7 @@ const addressSchema = z.object({
     }).trim(),
 });
 
-const fullNameSchema = z.object({
+const fullNameValidateSchema = z.object({
     firstName: z.string({
         required_error: 'firstName is required',
     }).nonempty({
@@ -31,6 +31,12 @@ const fullNameSchema = z.object({
     }).trim(),
 });
 
+// const orderValidateSchema = z.object({
+//     productName: z.string(),
+//     price: z.number().positive(),
+//     quantity: z.number().positive()
+// })
+
 const userValidateSchema = z.object({
     userId: z.number({
         required_error: 'userId is required',
@@ -42,7 +48,7 @@ const userValidateSchema = z.object({
         message: "Username can't be empty"
     }).trim(),
     password: z.string(),
-    fullName: fullNameSchema,
+    fullName: fullNameValidateSchema,
     age: z.number({
         required_error: 'Age is required',
         invalid_type_error: 'age must be Number'
@@ -53,6 +59,12 @@ const userValidateSchema = z.object({
         required_error: 'hobbies is required',
         invalid_type_error: 'hobbies must be text'
     }).nonempty().min(1)),
-    address: addressSchema,
+    address: addressValidateSchema,
+    orders: z.array(z.object({
+        productName: z.string(),
+        price: z.number().positive(),
+        quantity: z.number().positive()
+    })).optional()
+    // orders: z.array().isOptional()
 });
 export default userValidateSchema
