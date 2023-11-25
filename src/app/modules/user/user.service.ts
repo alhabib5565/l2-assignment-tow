@@ -9,10 +9,12 @@ const createUser = async (userData: TUser) => {
 }
 // username, fullName, age, email, address
 const getAllUser = async () => {
-    // const result = await User.aggregate([
-    //     { $project: { username: 1, age: 1, _id: 0, fullName: 1, email: 1, address: 1, _id: 0, password: 0, "fullName._id": 0, "address._id": 0, __v: 0 } }
-    // ])
-    const result = await User.find({})
+    const result = await User.aggregate([
+        {
+            $project: { username: 1, age: 1, _id: 0, fullName: 1, email: 1, address: 1 }
+        }
+    ])
+    // const result = await User.find({})
     return result
 }
 const getSingleUser = async (id: number) => {
@@ -75,7 +77,15 @@ const getSingleUserOrders = async (id: number) => {
     } else {
         throw Error('User not found')
     }
-    // const result = await User.findById(id)
+}
+
+const getTotalPrice = async (id: number) => {
+    const result = await User.aggregate([
+        { $match: { userId: id } },
+        { $group: { _id: id, totalPrice: { $sum: "orders.price" } } }
+    ])
+    return result
+
 }
 
 export const userService = {
@@ -85,5 +95,6 @@ export const userService = {
     updateUser,
     deleteUser,
     addOrder,
-    getSingleUserOrders
+    getSingleUserOrders,
+    getTotalPrice
 }
