@@ -64,8 +64,18 @@ const addOrder = async (id: number, orderData: Order) => {
 }
 
 
-const getSingleUserOrders = async () => {
-
+const getSingleUserOrders = async (id: number) => {
+    const user = new User()
+    if (await user.isUserExists(id)) {
+        const result = await User.aggregate([
+            { $match: { userId: id } },
+            { $project: { orders: 1, _id: 0 } }
+        ])
+        return result
+    } else {
+        throw Error('User not found')
+    }
+    // const result = await User.findById(id)
 }
 
 export const userService = {
